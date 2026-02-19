@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serie A Zone</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Teko:wght@600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --pl-purple: #37003c; --pl-green: #00ff85; --pl-blue: #04f5ff; --pl-pink: #e90052;
+            --bg-light: #ffffff; --text-dark: #242424;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif; background-color: var(--pl-purple);
+            background-image: radial-gradient(circle at top right, #5c0065, var(--pl-purple));
+            color: white; margin: 0; padding: 0; min-height: 100vh;
+            display: flex; flex-direction: column; align-items: center;
+        }
+
+        .navbar {
+            background-color: white; width: 100%; padding: 15px 40px; box-sizing: border-box;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.3); position: sticky; top: 0; z-index: 1000;
+        }
+        .nav-logo { font-family: 'Teko', sans-serif; font-size: 32px; color: var(--pl-purple); margin: 0; cursor: pointer; }
+        .nav-links { display: flex; gap: 15px; }
+        .nav-btn {
+            background: transparent; color: var(--text-dark); border: none; padding: 10px 20px;
+            font-size: 14px; font-weight: 600; font-family: 'Montserrat', sans-serif; cursor: pointer;
+            text-transform: uppercase; border-bottom: 3px solid transparent; transition: 0.2s;
+        }
+        .nav-btn:hover { color: var(--pl-purple); }
+        .nav-btn.attivo { color: var(--pl-purple); border-bottom: 3px solid var(--pl-pink); }
+
+        .main-container { width: 90%; max-width: 1000px; margin-top: 40px; margin-bottom: 60px; }
+
+        #sez-home { text-align: center; margin-top: 80px; animation: fadeIn 0.8s ease; display: flex; flex-direction: column; align-items: center;}
+        .hero-title { font-family: 'Teko', sans-serif; font-size: 80px; line-height: 0.9; margin-bottom: 10px; color: white; text-transform: uppercase; }
+        .hero-subtitle { font-size: 20px; font-weight: 400; margin-bottom: 40px; color: #d1d1d1; }
+        .btn-start { background-color: var(--pl-green); color: var(--pl-purple); font-weight: 800; font-size: 20px; padding: 20px 50px; border: none; border-radius: 5px; cursor: pointer; box-shadow: 0 10px 20px rgba(0, 255, 133, 0.3); transition: 0.3s; }
+        .btn-start:hover { transform: scale(1.05); background-color: white; }
+
+        .sezione { display: none; background: var(--bg-light); color: var(--text-dark); padding: 40px; border-radius: 10px; box-shadow: 0px 20px 40px rgba(0,0,0,0.5); animation: slideUp 0.4s ease; }
+        h2 { font-family: 'Teko', sans-serif; font-size: 45px; color: var(--pl-purple); margin: 0 0 5px 0; line-height: 1; }
+        .sottotitolo { color: #666; margin-bottom: 25px; font-weight: 600; }
+
+        input { width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
+        .btn-azione { background-color: var(--pl-purple); color: white; border: none; padding: 15px 30px; font-weight: 600; border-radius: 5px; cursor: pointer; width: 100%; transition: 0.2s; }
+        .btn-azione:hover { background-color: var(--pl-pink); }
+
+        .table-container { overflow-x: auto; margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th { background-color: #f3f4f6; color: #888; font-size: 12px; text-transform: uppercase; padding: 15px; text-align: left; }
+        td { padding: 15px; border-bottom: 1px solid #eee; font-weight: 600; }
+        .posizione-numero { color: var(--pl-pink); font-weight: 800; font-size: 18px; }
+        .punti-evidenziati { color: var(--pl-purple); font-weight: 800; font-size: 18px; }
+
+        .grid-squadre { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 20px; margin-top: 20px; }
+        .card-squadra { background: #f8f9fa; border: 2px solid #eee; border-radius: 10px; padding: 15px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .card-squadra:hover { transform: translateY(-5px); border-color: var(--pl-purple); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
+        .card-squadra img { width: 60px; height: 60px; object-fit: contain; margin-bottom: 10px; }
+        .card-squadra span { display: block; font-size: 13px; font-weight: 800; color: var(--pl-purple); }
+
+        .risultato-bot-card { background: #f8f9fa; border-top: 5px solid var(--pl-green); padding: 25px; border-radius: 8px; text-align: center; margin-top: 20px; }
+        .match-title { font-family: 'Teko', sans-serif; font-size: 35px; color: var(--pl-purple); }
+        .percentuali-box { display: flex; justify-content: space-around; margin: 20px 0; }
+        .perc-valore { font-size: 30px; font-weight: 800; color: var(--pl-pink); display: block; }
+        .perc-label { font-size: 12px; color: #666; font-weight: 600; text-transform: uppercase; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="navbar">
+        <h1 class="nav-logo" onclick="cambiaSezione('home')" style="display: flex; align-items: center; gap: 15px;">
+            <img src="logo.png" alt="Logo Serie A" style="height: 40px;">
+            <div>SERIE A <span style="color:var(--pl-pink);">ZONE</span></div>
+        </h1>
+        <div class="nav-links">
+            <button class="nav-btn" onclick="cambiaSezione('classifica', event)">Classifica</button>
+            <button class="nav-btn" onclick="cambiaSezione('squadra', event)">Rosa</button>
+            <button class="nav-btn" onclick="cambiaSezione('marcatori', event)">Top Scorers</button>
+            <button class="nav-btn" onclick="cambiaSezione('bot', event)">Pronostici</button>
+        </div>
+    </div>
+
+    <div class="main-container">
+
+        <div id="sez-home" style="display: flex;">
+            <img src="logo.png" alt="Logo Serie A" style="height: 150px; margin-bottom: 25px; filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.4)); animation: slideUp 0.6s ease;">
+            <div class="hero-title">Welcome to<br>Serie A Zone</div>
+            <div class="hero-subtitle">Le statistiche e i giocatori a portata di click.</div>
+            <button class="btn-start" onclick="cambiaSezione('classifica')">ENTRA ORA</button>
+        </div>
+
+        <div id="sez-classifica" class="sezione">
+            <h2>League Table</h2>
+            <div class="sottotitolo">Classifica aggiornata in tempo reale</div>
+            <div id="tabella-classifica" class="table-container">Caricamento in corso...</div>
+        </div>
+
+        <div id="sez-squadra" class="sezione">
+            <h2>Team Squad</h2>
+            <div class="sottotitolo">Clicca sul logo di una squadra per vedere i giocatori</div>
+            <div id="griglia-loghi" class="grid-squadre"></div>
+            <div id="risultato-squadra" class="table-container" style="margin-top: 40px;"></div>
+        </div>
+
+        <div id="sez-marcatori" class="sezione">
+            <h2>Top Scorers</h2>
+            <div class="sottotitolo">I migliori bomber della Serie A e i loro assist</div>
+            <div id="tabella-marcatori" class="table-container">Caricamento in corso...</div>
+        </div>
+
+        <div id="sez-bot" class="sezione">
+            <h2>Match Predictor</h2>
+            <div class="sottotitolo">Scrivi i nomi delle squadre (es. Milan, Juventus)</div>
+            <input type="text" id="casa" placeholder="Squadra di Casa">
+            <input type="text" id="trasferta" placeholder="Squadra in Trasferta">
+            <button class="btn-azione" onclick="calcolaPronostico()" style="background-color: var(--pl-green); color: var(--pl-purple);">CALCOLA PRONOSTICO</button>
+            <div id="risultato-bot"></div>
+        </div>
+
+    </div>
+
+    <script>
+        const SERVER_URL = "http://127.0.0.1:8000";
+
+        function cambiaSezione(sezioneScelta, event) {
+            document.getElementById("sez-home").style.display = "none";
+            document.getElementById("sez-classifica").style.display = "none";
+            document.getElementById("sez-squadra").style.display = "none";
+            document.getElementById("sez-marcatori").style.display = "none";
+            document.getElementById("sez-bot").style.display = "none";
+            
+            let bottoni = document.getElementsByClassName("nav-btn");
+            for(let i=0; i<bottoni.length; i++) { bottoni[i].classList.remove("attivo"); }
+            if(event) { event.target.classList.add("attivo"); } 
+            else if (sezioneScelta !== 'home') { if(sezioneScelta === 'classifica') bottoni[0].classList.add("attivo"); }
+
+            if(sezioneScelta === 'home') {
+                document.getElementById("sez-home").style.display = "flex";
+            } else {
+                document.getElementById("sez-" + sezioneScelta).style.display = "block";
+            }
+
+            if(sezioneScelta === 'classifica') caricaClassifica();
+            if(sezioneScelta === 'squadra') caricaLoghiSquadre(); 
+            if(sezioneScelta === 'marcatori') caricaMarcatori();
+        }
+
+        async function caricaClassifica() {
+            let box = document.getElementById("tabella-classifica");
+            box.innerHTML = "<p>⏳ Elaborazione dati...</p>";
+            try {
+                let risposta = await fetch(`${SERVER_URL}/classifica`);
+                let dati = await risposta.json();
+                let html = "<table><thead><tr><th>Pos</th><th>Club</th><th>Pt</th><th>G</th><th>V</th><th>N</th><th>P</th></tr></thead><tbody>";
+                for(let i=0; i<dati.length; i++) {
+                    let team = dati[i];
+                    html += `<tr><td class="posizione-numero">${team.posizione}</td>
+                        <td style="color:var(--pl-purple); font-weight:700; display:flex; align-items:center; gap:12px;">
+                            <img src="${team.logo}" width="28" height="28" style="object-fit:contain;">
+                            ${team.nome}
+                        </td>
+                        <td class="punti-evidenziati">${team.punti}</td>
+                        <td>${team.giocate}</td><td>${team.vittorie}</td><td>${team.pareggi}</td><td>${team.sconfitte}</td></tr>`;
+                }
+                html += "</tbody></table>";
+                box.innerHTML = html;
+            } catch (e) { box.innerHTML = "<p style='color:red;'>❌ Errore Server Python spento.</p>"; }
+        }
+
+        async function caricaLoghiSquadre() {
+            let boxGriglia = document.getElementById("griglia-loghi");
+            let boxRisultato = document.getElementById("risultato-squadra");
+            boxRisultato.innerHTML = ""; 
+            boxGriglia.innerHTML = "<p>⏳ Caricamento squadre...</p>";
+            try {
+                let risposta = await fetch(`${SERVER_URL}/squadre_serie_a`);
+                let dati = await risposta.json();
+                let html = "";
+                for(let i=0; i<dati.length; i++) {
+                    let team = dati[i];
+                    html += `<div class="card-squadra" onclick="mostraRosa(${team.id})">
+                                <img src="${team.logo}" alt="${team.nome}">
+                                <span>${team.nome}</span>
+                             </div>`;
+                }
+                boxGriglia.innerHTML = html;
+            } catch (e) { boxGriglia.innerHTML = "<p style='color:red;'>❌ Impossibile caricare i loghi.</p>"; }
+        }
+
+        async function mostraRosa(idSquadra) {
+            let box = document.getElementById("risultato-squadra");
+            box.innerHTML = "<p>⏳ Caricamento rosa...</p>";
+            box.scrollIntoView({ behavior: 'smooth' }); 
+            try {
+                let risposta = await fetch(`${SERVER_URL}/squadre/${idSquadra}`);
+                let dati = await risposta.json();
+                if (dati.errore) { box.innerHTML = `<p style='color:red;'>❌ ${dati.errore}</p>`; } 
+                else {
+                    let html = `<div style="display:flex; align-items:center; gap:15px; margin-bottom:15px;">
+                                    <img src="${dati.logo}" width="50">
+                                    <h3 style="color:var(--pl-purple); text-transform:uppercase; margin:0;">ROSA ${dati.squadra}</h3>
+                                </div>`;
+                    html += "<table><thead><tr><th>Giocatore</th><th>Ruolo</th><th>Nazionalità</th></tr></thead><tbody>";
+                    for(let i=0; i<dati.rosa.length; i++) {
+                        let p = dati.rosa[i];
+                        html += `<tr><td style="color:var(--pl-purple); font-weight:700;">${p.nome}</td><td>${p.ruolo}</td><td>${p.nazionalita}</td></tr>`;
+                    }
+                    html += `</tbody></table><br><button class="btn-azione" onclick="document.getElementById('risultato-squadra').innerHTML=''">CHIUDI ROSA</button>`;
+                    box.innerHTML = html;
+                }
+            } catch (e) { box.innerHTML = "<p style='color:red;'>❌ Errore Server.</p>"; }
+        }
+
+        async function caricaMarcatori() {
+            let box = document.getElementById("tabella-marcatori");
+            box.innerHTML = "<p>⏳ Download bomber...</p>";
+            try {
+                let risposta = await fetch(`${SERVER_URL}/marcatori`);
+                let dati = await risposta.json();
+                let html = "<table><thead><tr><th>Pos</th><th>Giocatore</th><th>Squadra</th><th>Gol</th><th>Assist</th><th>Presenze</th></tr></thead><tbody>";
+                for(let i=0; i<dati.length; i++) {
+                    let bomber = dati[i];
+                    html += `<tr>
+                        <td class="posizione-numero">${i + 1}°</td>
+                        <td style="color:var(--pl-purple); font-weight:800; font-size:16px;">${bomber.giocatore}</td>
+                        <td style="display:flex; align-items:center; gap:10px; font-weight:600;">
+                            <img src="${bomber.logo}" width="25" height="25" style="object-fit:contain;">
+                            ${bomber.squadra}
+                        </td>
+                        <td class="punti-evidenziati">${bomber.gol} ⚽</td>
+                        <td style="font-weight:700;">${bomber.assist} 👟</td>
+                        <td>${bomber.partite}</td>
+                    </tr>`;
+                }
+                html += "</tbody></table>";
+                box.innerHTML = html;
+            } catch (e) { box.innerHTML = "<p style='color:red;'>❌ Errore Server.</p>"; }
+        }
+
+        async function calcolaPronostico() {
+            let casa = document.getElementById("casa").value;
+            let trasferta = document.getElementById("trasferta").value;
+            let box = document.getElementById("risultato-bot");
+            if (!casa || !trasferta) return alert("Inserisci entrambe le squadre!");
+            box.innerHTML = "<p>⏳ AI in caricamento...</p>";
+            try {
+                let risposta = await fetch(`${SERVER_URL}/pronostico/${casa}/${trasferta}`);
+                let dati = await risposta.json();
+                if (dati.errore) { box.innerHTML = `<p style='color:red;'>❌ Errore: ${dati.errore}</p>`; } 
+                else {
+                    box.innerHTML = `
+                        <div class="risultato-bot-card">
+                            <div class="match-title">${dati.match}</div>
+                            <div class="percentuali-box">
+                                <div><span class="perc-valore">${dati.pronostico_bot["1 (Vittoria Casa)"]}</span><span class="perc-label">Vittoria Casa</span></div>
+                                <div><span class="perc-valore" style="color:#888;">${dati.pronostico_bot["X (Pareggio)"]}</span><span class="perc-label">Pareggio</span></div>
+                                <div><span class="perc-valore">${dati.pronostico_bot["2 (Vittoria Trasferta)"]}</span><span class="perc-label">Vittoria Trasferta</span></div>
+                            </div>
+                        </div>`;
+                }
+            } catch (e) { box.innerHTML = "<p style='color:red;'>❌ Errore Server Python.</p>"; }
+        }
+    </script>
+</body>
+</html>
